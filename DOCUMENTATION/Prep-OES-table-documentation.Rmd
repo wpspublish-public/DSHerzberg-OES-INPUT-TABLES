@@ -1,0 +1,97 @@
+---
+title: "Prepare performance-test norms tables for OES"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Overview  
+
+
+The code assumes a typical RStudio project folder hierarchy, with `INPUT-FILES` and `OUTPUT-FILES` folders at the first level.
+
+### Input Files
+
+* single-tab, single-column, join by SS: `Percentile-Lookup-SS.csv` 
+* single-tab, single-column, join by agestrat: `OES-age-labels.csv`
+
+* multi-tab (form), single-column, join by rawscore: `GDS_lookup.xlsx`
+* multi-tab (form), multi-column (scale), join by rawscore: `growth-score-lookup.xlsx`, `ageEquiv-form-lookup.xlsx`
+* multi-tab (form X CI_value), multi-column (scale), join by agestrat: `Form-Agestrat-CV.xlsx`
+
+* multi-file (form), multi-tab (agestrat), multi-column (scale), join by rawscore: `scale_lookup_interview.xlsx`, `scale_lookup_parent.xlsx`, `scale_lookup_teacher.xlsx`
+
+
+Here and throughout, certain token markers are employed to designate user-input values that vary by project:  
+
+* `{TOKEN}`: any value or series of values  
+* `{FILE-PATH}`  
+* `{FILE-NAME}` 
+
+### Multi-file-tab-column lookups
+
+##### Format of raw-to-SS lookup tables .xlsx
+
+The raw-to-SS lookup tables by scale is the first buidling block for the OES input tables. The task is to lookup `SS`, and the basic operation is the many-to-one correspondence between `rawscore` and `SS`. That lookup correspondence is stratified over three levels:
+
+1. columns (scale)
+2. tabs (agestrat)
+3. files (form)
+
+The tab labels should express agestrat as a three-digit integer (with leading zeros). The value of this label is the lower-bound of the agestrat, expressed in months. Here are some examples:
+
+* 4-6 months = 004
+* 3:0-3:5 = 036
+* 16 to 18 years = 192
+
+The standard format for file names is: [form]-rawToSS.xlsx
+- e.g., `parent-rawToSs.xlsx`
+
+##### Format of CV lookup tables .xlsx
+
+The lookup stratification over three levels (different from previous example):
+
+1. columns (scale)
+2. tabs (form)
+3. files (CI interval)
+
+* tab labels = form
+* file names: CV90, CV95, etc.
+* columns per tab (left to right):
+      + agestrat (in integer format as above)
+      + one column per scale, column name is scale acronym plus _CV90 or _CV95 (e.g., 'COG_CV90')
+      + cell values are confidence values (CV)
+
+##### Format of growth lookup tables .xlsx
+* example of var that does not differ by agestrat
+
+The lookup stratification over two levels (different from previous example):
+
+1. columns (scale)
+2. tabs (form)
+
+* tab labels = form
+* file name: growth.xlsx
+* columns per tab (left to right):
+      + rawscore
+      + one column per scale, column name is scale acronym plus _G (e.g., 'COG_G')
+      + cell values are growth scores
+  
+
+#################### LOOK at whether all inputs can be expressed as multi-file-tab-colum, with consistency about which vars are expressed at which levels
+
+<br>
+
+
+
+###### VALID CODE TO RUN
+
+```{r XXX, eval=FALSE}
+```
+
+###### COMMENTED SNIPPETS
+
+```{r XXX, echo=4:8, eval=FALSE}
+```
