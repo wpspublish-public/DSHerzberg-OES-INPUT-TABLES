@@ -37,8 +37,7 @@ scale_readin <- function(x) {
            .id = 'agestrat') %>% 
     # recode agestrat so that it will sort properly
     mutate(agestrat = str_sub(agestrat, 4) %>% 
-             str_pad(3, side = 'left', '0')) %>% 
-    assign('input_lookup', ., envir = .GlobalEnv)
+             str_pad(3, side = 'left', '0'))
 }
 
 scale_lookup_pre <- scale_file_name %>% 

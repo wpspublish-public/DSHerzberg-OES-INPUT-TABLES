@@ -218,7 +218,9 @@ $(document).ready(function () {
 </div>
 <div id="multi-file-tab-column-lookups" class="section level3">
 <h3>Multi-file-tab-column lookups</h3>
-<p>The set of files <code>scale_lookup_interview.xlsx</code>, <code>scale_lookup_parent.xlsx</code>, <code>scale_lookup_teacher.xlsx</code> presents the most complex case for reading in lookup tables. The task is to lookup <code>SS</code>, and the basic operation is the many-to-one correspondence between <code>rawscore</code> and <code>SS</code>. That lookup correspondence is stratified over three levels:</p>
+<div id="format-of-raw-to-ss-lookup-tables-.xlsx" class="section level5">
+<h5>Format of raw-to-SS lookup tables .xlsx</h5>
+<p>The raw-to-SS lookup tables by scale is the first buidling block for the OES input tables. The task is to lookup <code>SS</code>, and the basic operation is the many-to-one correspondence between <code>rawscore</code> and <code>SS</code>. That lookup correspondence is stratified over three levels:</p>
 <ol style="list-style-type: decimal">
 <li>columns (scale)</li>
 <li>tabs (agestrat)</li>
@@ -230,6 +232,8 @@ $(document).ready(function () {
 <li>3:0-3:5 = 036</li>
 <li>16 to 18 years = 192</li>
 </ul>
+<p>The standard format for file names is: [form]-rawToSS.xlsx - e.g., <code>parent-rawToSs.xlsx</code></p>
+</div>
 <div id="format-of-cv-lookup-tables-.xlsx" class="section level5">
 <h5>Format of CV lookup tables .xlsx</h5>
 <p>The lookup stratification over three levels (different from previous example):</p>

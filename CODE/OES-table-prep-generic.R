@@ -11,18 +11,17 @@ scale_readin <- function(x) {
   here(
     paste0('INPUT-FILES/', x, '-rawToSS.xlsx')) %>%
     assign('path', ., envir = .GlobalEnv)
-  
-  
+
+
   # input file is multi-tabbed .xlsx. Tabs contain lookup tables for each
   # agestrat. read input file into a df, stacking tabs on top of one another, and
   # creating a new column 'agestrat' to identify the origin tab of each set of rows.
-  path %>% 
+  path %>%
     excel_sheets() %>%
     set_names() %>%
     map_df(read_excel,
            path = path,
-           .id = 'agestrat') %>% 
-    assign('input_lookup', ., envir = .GlobalEnv)
+           .id = 'agestrat')
 }
 
 scale_lookup_pre <- form %>% 
@@ -36,18 +35,12 @@ CV_readin <- function(x) {
   here(
     paste0('INPUT-FILES/CV', x, '.xlsx')) %>%
     assign('path', ., envir = .GlobalEnv)
-  
-  
-  # input file is multi-tabbed .xlsx. Tabs contain lookup tables for each
-  # agestrat. read input file into a df, stacking tabs on top of one another, and
-  # creating a new column 'agestrat' to identify the origin tab of each set of rows.
   path %>% 
     excel_sheets() %>%
     set_names() %>%
     map_df(read_excel,
            path = path,
-           .id = 'form') %>% 
-    assign('CV_lookup', ., envir = .GlobalEnv)
+           .id = 'form')
 }
 
 CV_lookup_pre <- CV %>% 
