@@ -29,6 +29,17 @@ scale_lookup_pre <- form %>%
   setNames(form) %>% 
   bind_rows(.id = 'form')
 
+# Read in age equiv .cvs
+age_equiv_pre <- read_csv(here('INPUT-FILES/SHIPLEY/age-equiv.csv'))
+
+# join scale, AE
+all_lookup <- scale_lookup_pre %>% 
+  left_join(age_equiv_pre, by = 'rawscore')
+
+
+
+######### NOTHING BELOW THIS LINE HAS BEEN MODDED FOR SHIPLEY
+
 # Read in CV .xlsx
 CV_readin <- function(x) {
   # express the directory paths to the input files as a char vec.
@@ -55,7 +66,6 @@ growth_lookup_pre <- here('INPUT-FILES/growth.xlsx') %>%
   map_df(read_excel,
          path = here('INPUT-FILES/growth.xlsx'),
          .id = 'form')
-
 
 # join scale, CV, growth
 all_lookup <- scale_lookup_pre %>% 
