@@ -56,11 +56,19 @@ growth_lookup_pre <- here('INPUT-FILES/growth.xlsx') %>%
          path = here('INPUT-FILES/growth.xlsx'),
          .id = 'form')
 
+# Read in age-equiv .xlsx
+age_equiv_lookup_pre <- here('INPUT-FILES/age-equiv.xlsx') %>% 
+  excel_sheets() %>%
+  set_names() %>%
+  map_df(read_excel,
+         path = here('INPUT-FILES/age-equiv.xlsx'),
+         .id = 'form')
 
-# join scale, CV, growth
+# join scale, CV, growth, AE
 all_lookup <- scale_lookup_pre %>% 
   left_join(CV_lookup_pre, by = c('form', 'agestrat')) %>% 
-  left_join(growth_lookup_pre, by = c('form', 'rawscore'))
+  left_join(growth_lookup_pre, by = c('form', 'rawscore')) %>% 
+  left_join(age_equiv_lookup_pre, by = c('form', 'rawscore')) 
 
 
 

@@ -38,14 +38,14 @@ test <- scale_acr %>%
   # original input set. select() then pares to only those columsn needed in the
   # final OES output.
   bind_cols(all_lookup, .) %>% 
-  
-  ######## START HERE - READ IN AGE EQUIV, THEN GO TO THIS CODE
-  
-  
-  select(form:COM, ends_with('CI90'), ends_with('CI95'), ends_with('_G'), ends_with('_AE')) %>% 
+  select(form:last(scale_acr), ends_with('CI90'), ends_with('CI95'), ends_with('_G'), ends_with('_AE')) %>% 
   # rename SS cols so all cols to be gathered are named with the format
   # "scaleName_scoreType"
-  rename_at(vars(PHY:COM), ~ paste0(.x,"_SS")) %>% 
+  rename_at(vars(scale_acr), ~ paste0(.x,"_SS")) %>% 
+  
+  ######### START HERE: RUN OES-table-prep-generic first
+  
+  
   # gather "scaleName_scoreType" cols into key column, SS and CI values into val
   # col
   gather(key, val, 4:ncol(.)) %>%
