@@ -3,7 +3,7 @@ suppressMessages(library(tidyverse))
 suppressMessages(library(readxl))
 
 form <- c('child', 'adult')
-scale_acr <- c('VOC', 'ABS', 'BLO')
+scale_acr <- c('VOC', 'ABS', 'BLO', 'CMA', 'CMB')
 CV <- c('90', '95')
 
 scale_readin <- function(x) {

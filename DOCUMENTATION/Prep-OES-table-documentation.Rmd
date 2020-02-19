@@ -14,6 +14,15 @@ The code assumes a typical RStudio project folder hierarchy, with `INPUT-FILES` 
 
 ### Input Files
 
+##### Issues to consider:
+
+* What is the primary lookup input (rawscore, SS, agestrat, other var?)
+* Over how many levels is the input stratified (file, tab, column?)
+
+The goal is to have code that functions as templates for 1-, 2-, and 3- level stratification. Three level stratification is the most complex, can it also be the most generic? Can the code be written for reading in a three-level (file, tab, column) .xlsx stratification, and then pared down for less complex inputs.
+
+##### Types of Lookup files from DP-4
+
 * single-tab, single-column, join by SS: `Percentile-Lookup-SS.csv` 
 * single-tab, single-column, join by agestrat: `OES-age-labels.csv`
 

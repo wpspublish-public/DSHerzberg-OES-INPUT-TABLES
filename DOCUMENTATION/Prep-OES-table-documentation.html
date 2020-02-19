@@ -199,6 +199,16 @@ $(document).ready(function () {
 </div>
 <div id="input-files" class="section level3">
 <h3>Input Files</h3>
+<div id="issues-to-consider" class="section level5">
+<h5>Issues to consider:</h5>
+<ul>
+<li>What is the primary lookup input (rawscore, SS, agestrat, other var?)</li>
+<li>Over how many levels is the input stratified (file, tab, column?)</li>
+</ul>
+<p>The goal is to have code that functions as templates for 1-, 2-, and 3- level stratification. Three level stratification is the most complex, can it also be the most generic? Can the code be written for reading in a three-level (file, tab, column) .xlsx stratification, and then pared down for less complex inputs.</p>
+</div>
+<div id="types-of-lookup-files-from-dp-4" class="section level5">
+<h5>Types of Lookup files from DP-4</h5>
 <ul>
 <li>single-tab, single-column, join by SS: <code>Percentile-Lookup-SS.csv</code></li>
 <li><p>single-tab, single-column, join by agestrat: <code>OES-age-labels.csv</code></p></li>
@@ -215,6 +225,7 @@ $(document).ready(function () {
 </li>
 <li><code>{FILE-NAME}</code></li>
 </ul>
+</div>
 </div>
 <div id="multi-file-tab-column-lookups" class="section level3">
 <h3>Multi-file-tab-column lookups</h3>

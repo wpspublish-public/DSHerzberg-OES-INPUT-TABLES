@@ -42,10 +42,6 @@ test <- scale_acr %>%
   # rename SS cols so all cols to be gathered are named with the format
   # "scaleName_scoreType"
   rename_at(vars(scale_acr), ~ paste0(.x,"_SS")) %>% 
-  
-  ######### START HERE: RUN OES-table-prep-generic first
-  
-  
   # gather "scaleName_scoreType" cols into key column, SS and CI values into val
   # col
   gather(key, val, 4:ncol(.)) %>%
