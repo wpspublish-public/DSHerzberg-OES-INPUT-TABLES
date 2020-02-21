@@ -4,7 +4,7 @@ suppressMessages(library(readxl))
 
 form <- c('child', 'adult')
 scale_acr <- c('VOC', 'ABS', 'BLO', 'CMA', 'CMB')
-CV <- c('90', '95')
+CV <- c('68', '90', '95')
 
 scale_readin <- function(x) {
   # express the directory paths to the input files as a char vec.
@@ -36,28 +36,28 @@ age_equiv_pre <- read_csv(here('INPUT-FILES/SHIPLEY/age-equiv.csv'))
 all_lookup <- scale_lookup_pre %>% 
   left_join(age_equiv_pre, by = 'rawscore')
 
-
-
-######### NOTHING BELOW THIS LINE HAS BEEN MODDED FOR SHIPLEY
-
 # Read in CV .xlsx
 CV_readin <- function(x) {
   # express the directory paths to the input files as a char vec.
   here(
-    paste0('INPUT-FILES/CV', x, '.xlsx')) %>%
+    paste0('INPUT-FILES/SHIPLEY/CV', x, '.xlsx')) %>%
     assign('path', ., envir = .GlobalEnv)
   path %>% 
     excel_sheets() %>%
     set_names() %>%
     map_df(read_excel,
            path = path,
-           .id = 'form')
+           .id = 'form',
+           col_types = c('text', 'numeric', 'numeric', 'numeric', 'numeric', 'numeric')
+           )
 }
 
 CV_lookup_pre <- CV %>% 
   map(CV_readin) %>% 
   setNames(CV) %>% 
   reduce(full_join, by = c('form', 'agestrat'))
+
+######### NOTHING BELOW THIS LINE HAS BEEN MODDED FOR SHIPLEY
 
 # Read in growth score .xlsx
 growth_lookup_pre <- here('INPUT-FILES/growth.xlsx') %>% 
