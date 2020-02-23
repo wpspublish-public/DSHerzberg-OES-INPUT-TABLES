@@ -138,19 +138,21 @@ OES_lookup <- all_lookup_tall %>%
   # This drops rows that are NA on SS, which shouldn't exist on final output table.
   filter(!is.na(SS)) %>% 
   left_join(perc_lookup, by = 'SS') %>% 
-  
-  ################### START HERE
-  
-  
   mutate(descrange = case_when(
-    SS >= 131 ~ 'Well above average',
-    between(SS, 116, 130) ~ 'Above average',
-    between(SS, 85, 115) ~ 'Average',
-    between(SS, 70, 84) ~ 'Below average',
-    SS <= 69 ~ 'Delayed',
+    SS >= 130 ~ 'Superior',
+    between(SS, 120, 129) ~ 'Well Above average',
+    between(SS, 110, 119) ~ 'Above average',
+    between(SS, 90, 109) ~ 'Average',
+    between(SS, 80, 89) ~ 'Below average',
+    between(SS, 70, 79) ~ 'Well Below average',
+    SS <= 69 ~ 'Low',
     TRUE ~ NA_character_
   )) %>% 
-  arrange(match(scale, c('PHY', 'ADP', 'SOC', 'COG', 'COM', 'GDS')), form, agestrat) %>% 
+  arrange(match(scale, c('VOC', 'ABS', 'BLO', 'CMA', 'CMB')), match(form, c('child', 'adult')), agestrat) %>% 
+
+  #### CODE BELOW NOT YET ADAPTED FOR SHIPLEY
+  
+  
   left_join(age_labels, by = 'agestrat') %>% 
   rename(agerange = OES_label) %>% 
   select(scale, form, agerange, rawscore, SS, CI90, CI95, growth, descrange, Percentile, AgeEquiv)
