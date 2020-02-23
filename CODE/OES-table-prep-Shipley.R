@@ -7,7 +7,7 @@ scale_acr <- c('VOC', 'ABS', 'BLO', 'CMA', 'CMB')
 CV <- c('68', '90', '95')
 
 # read in percentile lookup column
-perc_lookup <- suppressMessages(read_csv(here('INPUT-FILES/SHIPLEY/Percentile-Lookup-SS.csv')))
+perc_lookup <- suppressMessages(read_csv(here('INPUT-FILES/SHIPLEY/Percentile-Lookup-SS-Shipley.csv')))
 
 scale_readin <- function(x) {
   # express the directory paths to the input files as a char vec.

@@ -74,7 +74,9 @@ The lookup stratification over three levels (different from previous example):
       + cell values are confidence values (CV)
 
 ##### Format of growth lookup tables .xlsx
-* example of var that does not differ by agestrat
+* example of var that does not differ by agestrat, but does differ by form. In DP4, you had two such variables, growth score and GDS. Vars which are essentially raw to SS lookups, that do not differ by agestrat, can be handled in a single input table. There may be disjunctive raw score ranges involved (e.g., a low range for one lookup, and a high range for another).
+
+We need a better generic file name for these scores than `growth.xlsx`, e.g.
 
 The lookup stratification over two levels (different from previous example):
 
