@@ -7,7 +7,12 @@ scale_acr <- c('VOC', 'ABS', 'BLO', 'CMA', 'CMB')
 CV <- c('68', '90', '95')
 
 # read in percentile lookup column
-perc_lookup <- suppressMessages(read_csv(here('INPUT-FILES/SHIPLEY/Percentile-Lookup-SS-Shipley.csv')))
+perc_lookup <- suppressMessages(read_csv(here('INPUT-FILES/SHIPLEY/Percentile-Lookup-SS-Shipley.csv'))) %>% 
+  rename(percentile = Percentile)
+
+# read in age labels for OES output lookup table
+age_labels <- suppressMessages(read_csv(here('INPUT-FILES/SHIPLEY/age-labels.csv')))
+
 
 scale_readin <- function(x) {
   # express the directory paths to the input files as a char vec.
@@ -126,8 +131,8 @@ all_lookup_tall <- scale_acr %>%
   # spread so that type yields cols of SS, G, CI90, CI95, and that quad remains
   # paired with correct form, agestrat, rawscore, and scale.
   spread(type, val) %>% 
-  select(scale, form, agestrat, rawscore, SS, CI90, CI95, AE) %>% 
-  rename(AgeEquiv = AE) %>% 
+  select(scale, form, agestrat, rawscore, SS, CI68, CI90, CI95, AE) %>% 
+  rename(age_equiv = AE) %>% 
   arrange(scale) %>% 
   mutate(
     SS = as.numeric(SS)
@@ -149,17 +154,13 @@ OES_lookup <- all_lookup_tall %>%
     TRUE ~ NA_character_
   )) %>% 
   arrange(match(scale, c('VOC', 'ABS', 'BLO', 'CMA', 'CMB')), match(form, c('child', 'adult')), agestrat) %>% 
-
-  #### CODE BELOW NOT YET ADAPTED FOR SHIPLEY
-  
-  
   left_join(age_labels, by = 'agestrat') %>% 
-  rename(agerange = OES_label) %>% 
-  select(scale, form, agerange, rawscore, SS, CI90, CI95, growth, descrange, Percentile, AgeEquiv)
+  rename(age_range = OES_label, norms = form, raw_score = rawscore, desc_range = descrange) %>% 
+  select(scale, norms, age_range, raw_score, SS, CI68, CI90, CI95, desc_range, percentile, age_equiv)
 
 # Write OES lookup table to .csv
 write_csv(OES_lookup, here(
-  'OUTPUT-FILES/DP4-OES-lookup.csv'
+  'OUTPUT-FILES/Shipley2-lookup.csv'
 ))
 
 
