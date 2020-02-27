@@ -206,6 +206,15 @@ $(document).ready(function () {
 <li>Over how many levels is the input stratified (file, tab, column?)</li>
 </ul>
 <p>The goal is to have code that functions as templates for 1-, 2-, and 3- level stratification. Three level stratification is the most complex, can it also be the most generic? Can the code be written for reading in a three-level (file, tab, column) .xlsx stratification, and then pared down for less complex inputs.</p>
+<p>Consider:</p>
+<ul>
+<li>Requiring the file level stratification to always be form. Therefore, any lookup that is divided by form always has multiple input files.</li>
+<li>File name consists of 1, 2, or 3 elements separated by <code>-</code>, in a three-level strat, the nomenclature would be [fileStratVar]-[tabStratVar]-[lookupRel].xlsx, where [lookupRel] provides the variable in the far-left lookup column and the variable whose values are lookedup up in the remaining right-ward columns, separated by <code>To</code>
+<ul>
+<li>thus, <code>parent-agestrat-rawToSS.xlsx</code>, <code>parent-agestratToCV.xlsx</code>, etc.</li>
+</ul></li>
+<li>Use read_xl and always .xlsx, for consistency?</li>
+</ul>
 </div>
 <div id="types-of-lookup-files-from-dp-4" class="section level5">
 <h5>Types of Lookup files from DP-4</h5>

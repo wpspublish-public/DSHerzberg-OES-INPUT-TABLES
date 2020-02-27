@@ -21,6 +21,13 @@ The code assumes a typical RStudio project folder hierarchy, with `INPUT-FILES` 
 
 The goal is to have code that functions as templates for 1-, 2-, and 3- level stratification. Three level stratification is the most complex, can it also be the most generic? Can the code be written for reading in a three-level (file, tab, column) .xlsx stratification, and then pared down for less complex inputs.
 
+Consider:
+
+* Requiring the file level stratification to always be form. Therefore, any lookup that is divided by form always has multiple input files.
+* File name consists of 1, 2, or 3 elements separated by `-`, in a three-level strat, the nomenclature would be [fileStratVar]-[tabStratVar]-[lookupRel].xlsx, where [lookupRel] provides the variable in the far-left lookup column and the variable whose values are lookedup up in the remaining right-ward columns, separated by `To` 
+      + thus, `parent-agestrat-rawToSS.xlsx`, `parent-agestratToCV.xlsx`, etc.
+* Use read_xl and always .xlsx, for consistency?
+
 ##### Types of Lookup files from DP-4
 
 * single-tab, single-column, join by SS: `Percentile-Lookup-SS.csv` 

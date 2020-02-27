@@ -79,33 +79,26 @@ all_lookup_tall <- scale_acr %>%
               !!str_c(.x, '_CI90_UB_pre') := !!sym(.x) + !!sym(str_c(.x, '_CV90')), 
               !!str_c(.x, '_CI95_LB_pre') := !!sym(.x) - !!sym(str_c(.x, '_CV95')),
               !!str_c(.x, '_CI95_UB_pre') := !!sym(.x) + !!sym(str_c(.x, '_CV95')), 
-              # Next four operations truncate UB at 160, LB at 40, and coerce
-              # both to character
-              !!str_c(.x, '_CI68_LB') := as.character(case_when(
-                !!sym(str_c(.x, '_CI68_LB_pre')) < 40 ~ 40,
-                TRUE ~ !!sym(str_c(.x, '_CI68_LB_pre'))
-              )),
-              !!str_c(.x, '_CI68_UB') := as.character(case_when(
-                !!sym(str_c(.x, '_CI68_UB_pre')) > 160 ~ 160,
-                TRUE ~ !!sym(str_c(.x, '_CI68_UB_pre'))
-              )),
-              !!str_c(.x, '_CI90_LB') := as.character(case_when(
-                !!sym(str_c(.x, '_CI90_LB_pre')) < 40 ~ 40,
-                TRUE ~ !!sym(str_c(.x, '_CI90_LB_pre'))
-              )),
-              !!str_c(.x, '_CI90_UB') := as.character(case_when(
-                !!sym(str_c(.x, '_CI90_UB_pre')) > 160 ~ 160,
-                TRUE ~ !!sym(str_c(.x, '_CI90_UB_pre'))
-              )),
-              !!str_c(.x, '_CI95_LB') := as.character(case_when(
-                !!sym(str_c(.x, '_CI95_LB_pre')) < 40 ~ 40,
-                TRUE ~ !!sym(str_c(.x, '_CI95_LB_pre'))
-              )),
-              !!str_c(.x, '_CI95_UB') := as.character(case_when(
-                !!sym(str_c(.x, '_CI95_UB_pre')) > 160 ~ 160,
-                TRUE ~ !!sym(str_c(.x, '_CI95_UB_pre'))
-              )),
-              # Next two operations yield the formatted, truncated CIs as strings
+              # Next operations coerce UB, LB at 40, to character
+              !!str_c(.x, '_CI68_LB') := as.character(
+                !!sym(str_c(.x, '_CI68_LB_pre')
+                )),
+              !!str_c(.x, '_CI68_UB') := as.character(
+                !!sym(str_c(.x, '_CI68_UB_pre')
+                )),
+              !!str_c(.x, '_CI90_LB') := as.character(
+                !!sym(str_c(.x, '_CI90_LB_pre')
+                )),
+              !!str_c(.x, '_CI90_UB') := as.character(
+                !!sym(str_c(.x, '_CI90_UB_pre')
+                )),
+              !!str_c(.x, '_CI95_LB') := as.character(
+                !!sym(str_c(.x, '_CI95_LB_pre')
+                )),
+              !!str_c(.x, '_CI95_UB') := as.character(
+                !!sym(str_c(.x, '_CI95_UB_pre')
+                )),
+             # Next operations yield the formatted, truncated CIs as strings
               !!str_c(.x, '_CI68') :=
                 str_c(!!sym(str_c(.x, '_CI68_LB')), !!sym(str_c(.x, '_CI68_UB')), sep = ' - '),
               !!str_c(.x, '_CI90') :=
@@ -160,7 +153,7 @@ OES_lookup <- all_lookup_tall %>%
 
 # Write OES lookup table to .csv
 write_csv(OES_lookup, here(
-  'OUTPUT-FILES/Shipley2-lookup.csv'
+  'OUTPUT-FILES/Shipley2-OES-lookup.csv'
 ))
 
 
