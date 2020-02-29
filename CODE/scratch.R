@@ -12,9 +12,9 @@ CV_readin <- function(x) {
     excel_sheets() %>%
     set_names() %>%
     map_df(read_excel,
-           path = path,
-           .id = 'agestrat',
-           col_types = c('text', 'numeric', 'numeric', 'numeric', 'numeric')
+           path = path
+           # .id = 'agestrat',
+           # col_types = c('text', 'numeric', 'numeric', 'numeric', 'numeric')
   )
 }
 

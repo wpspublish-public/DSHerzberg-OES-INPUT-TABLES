@@ -28,6 +28,15 @@ Consider:
       + thus, `parent-agestrat-rawToSS.xlsx`, `parent-agestratToCV.xlsx`, etc.
 * Use read_xl and always .xlsx, for consistency?
 
+##### Standardized File Naming
+
+`[fileVarVal]-[tabVar]-[lookupRel].xlsx`
+
+parent-rawToSS.xlsx = `parent-agestrat-rawToSS.xlsx`  
+teacher-rawToSS.xlsx = `teacher-agestrat-rawToSS.xlsx`  
+self-rawToSS.xlsx = `self-agestrat-rawToSS.xlsx`  
+
+
 ##### Types of Lookup files from DP-4
 
 * single-tab, single-column, join by SS: `Percentile-Lookup-SS.csv` 

@@ -98,13 +98,15 @@ all_lookup_tall <- scale_acr %>%
               !!str_c(.x, '_CI95_UB') := as.character(
                 !!sym(str_c(.x, '_CI95_UB_pre')
                 )),
-             # Next operations yield the formatted, truncated CIs as strings
+              # Next operations yield the formatted, truncated CIs as strings.
+              # Prepend " " blank space to strings to prevent excel from reading
+              # CIs as dates.
               !!str_c(.x, '_CI68') :=
-                str_c(!!sym(str_c(.x, '_CI68_LB')), !!sym(str_c(.x, '_CI68_UB')), sep = ' - '),
+                str_c(" ", str_c(!!sym(str_c(.x, '_CI68_LB')), !!sym(str_c(.x, '_CI68_UB')), sep = ' - ')),
               !!str_c(.x, '_CI90') :=
-                str_c(!!sym(str_c(.x, '_CI90_LB')), !!sym(str_c(.x, '_CI90_UB')), sep = ' - '),
+                str_c(" ", str_c(!!sym(str_c(.x, '_CI90_LB')), !!sym(str_c(.x, '_CI90_UB')), sep = ' - ')),
               !!str_c(.x, '_CI95') :=
-                str_c(!!sym(str_c(.x, '_CI95_LB')), !!sym(str_c(.x, '_CI95_UB')), sep = ' - ')
+                str_c(" ", str_c(!!sym(str_c(.x, '_CI95_LB')), !!sym(str_c(.x, '_CI95_UB')), sep = ' - '))
             )
   ) %>%
   # At this point the object has only the new columns; all input columns have
@@ -153,7 +155,9 @@ OES_lookup <- all_lookup_tall %>%
 
 # Write OES lookup table to .csv
 write_csv(OES_lookup, here(
-  'OUTPUT-FILES/Shipley2-OES-lookup.csv'
-))
+  "OUTPUT-FILES/Shipley2-OES-lookup.csv"
+  ),
+  na = ""
+)
 
 
