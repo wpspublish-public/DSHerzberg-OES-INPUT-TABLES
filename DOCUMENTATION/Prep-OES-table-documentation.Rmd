@@ -115,10 +115,41 @@ The lookup stratification over two levels (different from previous example):
 
 ###### VALID CODE TO RUN
 
-```{r XXX, eval=FALSE}
+```{r three_level_readin, eval=FALSE}
+file_strat_var <- 'form'
+file_strat_val <- c('parent', 'teacher', 'self')
+tab_strat_var <- 'agestrat'
+key_var <- 'raw'
+col_var <- 'SS'
+
+scale_readin <- function(x) {
+  # express the directory paths to the input files as a char vec.
+  here(
+    paste0('INPUT-FILES/', x, '-', tab_strat_var, '-', key_var, 'To', col_var, '.xlsx')) %>%
+    assign('path', ., envir = .GlobalEnv)
+
+
+  # input file is multi-tabbed .xlsx. Tabs contain lookup tables for each
+  # agestrat. read input file into a df, stacking tabs on top of one another, and
+  # creating a new column 'agestrat' to identify the origin tab of each set of rows.
+  path %>%
+    excel_sheets() %>%
+    set_names() %>%
+    map_df(read_excel,
+           path = path,
+          .id = tab_strat_var)
+}
+
+scale_lookup_pre <- file_strat_val %>% 
+  map(scale_readin) %>% 
+  setNames(file_strat_val) %>% 
+  bind_rows(.id = file_strat_var)
 ```
 
 ###### COMMENTED SNIPPETS
+The generic code for reading an input file with stratification over file, tab, and table levels requries the user to designate token values. For the file-level variable, you must specify both the name (e.g., `'form'`) and the values (e.g., `c('parent', 'teacher', 'self')`). The table level of stratification captures the core lookup relationship between two variables:
 
-```{r XXX, echo=4:8, eval=FALSE}
+* `key_var`: the lookup input, located in the table's far-left column; and,
+* `col_var`: the lookup output, located in the columns to the right of the key column.
+```{r three_level_readin, echo=1:5, eval=FALSE}
 ```

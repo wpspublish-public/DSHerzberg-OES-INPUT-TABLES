@@ -307,9 +307,47 @@ self-rawToSS.xlsx = <code>self-agestrat-rawToSS.xlsx</code></p>
 </div>
 <div id="valid-code-to-run" class="section level6">
 <h6>VALID CODE TO RUN</h6>
+<pre class="r"><code>file_strat_var &lt;- 'form'
+file_strat_val &lt;- c('parent', 'teacher', 'self')
+tab_strat_var &lt;- 'agestrat'
+key_var &lt;- 'raw'
+col_var &lt;- 'SS'
+
+scale_readin &lt;- function(x) {
+  # express the directory paths to the input files as a char vec.
+  here(
+    paste0('INPUT-FILES/', x, '-', tab_strat_var, '-', key_var, 'To', col_var, '.xlsx')) %&gt;%
+    assign('path', ., envir = .GlobalEnv)
+
+
+  # input file is multi-tabbed .xlsx. Tabs contain lookup tables for each
+  # agestrat. read input file into a df, stacking tabs on top of one another, and
+  # creating a new column 'agestrat' to identify the origin tab of each set of rows.
+  path %&gt;%
+    excel_sheets() %&gt;%
+    set_names() %&gt;%
+    map_df(read_excel,
+           path = path,
+          .id = tab_strat_var)
+}
+
+scale_lookup_pre &lt;- file_strat_val %&gt;% 
+  map(scale_readin) %&gt;% 
+  setNames(file_strat_val) %&gt;% 
+  bind_rows(.id = file_strat_var)</code></pre>
 </div>
 <div id="commented-snippets" class="section level6">
 <h6>COMMENTED SNIPPETS</h6>
+<p>The generic code for reading an input file with stratification over file, tab, and table levels requries the user to designate token values. For the file-level variable, you must specify both the name (e.g., <code>'form'</code>) and the values (e.g., <code>c('parent', 'teacher', 'self')</code>). The table level of stratification captures the core lookup relationship between two variables:</p>
+<ul>
+<li><code>key_var</code>: the lookup input, located in the table’s far-left column; and,</li>
+<li><code>col_var</code>: the lookup output, located in the columns to the right of the key column.</li>
+</ul>
+<pre class="r"><code>file_strat_var &lt;- 'form'
+file_strat_val &lt;- c('parent', 'teacher', 'self')
+tab_strat_var &lt;- 'agestrat'
+key_var &lt;- 'raw'
+col_var &lt;- 'SS'</code></pre>
 </div>
 </div>
 </div>

@@ -2,14 +2,16 @@ suppressMessages(library(here))
 suppressMessages(library(tidyverse))
 suppressMessages(library(readxl))
 
-form <- c('parent', 'teacher', 'self')
-scale_acr <- c('COG', 'EMO')
-CV <- c('90', '95')
+file_strat_var <- 'form'
+file_strat_val <- c('parent', 'teacher', 'self')
+tab_strat_var <- 'agestrat'
+key_var <- 'raw'
+col_var <- 'SS'
 
 scale_readin <- function(x) {
   # express the directory paths to the input files as a char vec.
   here(
-    paste0('INPUT-FILES/', x, '-rawToSS.xlsx')) %>%
+    paste0('INPUT-FILES/', x, '-', tab_strat_var, '-', key_var, 'To', col_var, '.xlsx')) %>%
     assign('path', ., envir = .GlobalEnv)
 
 
@@ -21,13 +23,13 @@ scale_readin <- function(x) {
     set_names() %>%
     map_df(read_excel,
            path = path,
-           .id = 'agestrat')
+          .id = tab_strat_var)
 }
 
-scale_lookup_pre <- form %>% 
+scale_lookup_pre <- file_strat_val %>% 
   map(scale_readin) %>% 
-  setNames(form) %>% 
-  bind_rows(.id = 'form')
+  setNames(file_strat_val) %>% 
+  bind_rows(.id = file_strat_var)
 
 # Read in CV .xlsx
 CV_readin <- function(x) {
