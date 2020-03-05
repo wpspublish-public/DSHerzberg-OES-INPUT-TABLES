@@ -307,22 +307,21 @@ self-rawToSS.xlsx = <code>self-agestrat-rawToSS.xlsx</code></p>
 </div>
 <div id="valid-code-to-run" class="section level6">
 <h6>VALID CODE TO RUN</h6>
-<pre class="r"><code>file_strat_var &lt;- 'form'
+<pre class="r"><code>suppressMessages(library(here))
+suppressMessages(library(tidyverse))
+suppressMessages(library(readxl))
+
+file_strat_var &lt;- 'form'
 file_strat_val &lt;- c('parent', 'teacher', 'self')
 tab_strat_var &lt;- 'agestrat'
 key_var &lt;- 'raw'
 col_var &lt;- 'SS'
 
-scale_readin &lt;- function(x) {
-  # express the directory paths to the input files as a char vec.
+three_level_readin &lt;- function(x) {
   here(
     paste0('INPUT-FILES/', x, '-', tab_strat_var, '-', key_var, 'To', col_var, '.xlsx')) %&gt;%
     assign('path', ., envir = .GlobalEnv)
-
-
-  # input file is multi-tabbed .xlsx. Tabs contain lookup tables for each
-  # agestrat. read input file into a df, stacking tabs on top of one another, and
-  # creating a new column 'agestrat' to identify the origin tab of each set of rows.
+  
   path %&gt;%
     excel_sheets() %&gt;%
     set_names() %&gt;%
@@ -331,23 +330,46 @@ scale_readin &lt;- function(x) {
           .id = tab_strat_var)
 }
 
-scale_lookup_pre &lt;- file_strat_val %&gt;% 
+file_strat_val %&gt;% 
   map(scale_readin) %&gt;% 
   setNames(file_strat_val) %&gt;% 
-  bind_rows(.id = file_strat_var)</code></pre>
+  bind_rows(.id = file_strat_var) %&gt;% 
+  assign(
+    paste0(file_strat_var, '_', tab_strat_var, '_', key_var, 'To', col_var, '_lookup'), 
+    ., envir = .GlobalEnv)</code></pre>
 </div>
 <div id="commented-snippets" class="section level6">
 <h6>COMMENTED SNIPPETS</h6>
+<p>First load three required packages.</p>
 <p>The generic code for reading an input file with stratification over file, tab, and table levels requries the user to designate token values. For the file-level variable, you must specify both the name (e.g., <code>'form'</code>) and the values (e.g., <code>c('parent', 'teacher', 'self')</code>). The table level of stratification captures the core lookup relationship between two variables:</p>
 <ul>
 <li><code>key_var</code>: the lookup input, located in the table’s far-left column; and,</li>
 <li><code>col_var</code>: the lookup output, located in the columns to the right of the key column.</li>
 </ul>
-<pre class="r"><code>file_strat_var &lt;- 'form'
+<pre class="r"><code>suppressMessages(library(here))
+suppressMessages(library(tidyverse))
+suppressMessages(library(readxl))
+
+file_strat_var &lt;- 'form'
 file_strat_val &lt;- c('parent', 'teacher', 'self')
 tab_strat_var &lt;- 'agestrat'
 key_var &lt;- 'raw'
 col_var &lt;- 'SS'</code></pre>
+<p>Here we write a function <code>three_level_readin</code> to read in the input file. We use <code>here::here()</code> and <code>base::paste0</code> to express the file path to the input file as a character string. Note the token substitutions in the string. <code>base::assign()</code> is used to assign the string to the object <code>path</code> in the global environment, so that it can be accessed from there when <code>three_level_readin</code> is called.</p>
+<pre class="r"><code>three_level_readin &lt;- function(x) {
+  here(
+    paste0('INPUT-FILES/', x, '-', tab_strat_var, '-', key_var, 'To', col_var, '.xlsx')) %&gt;%
+    assign('path', ., envir = .GlobalEnv)</code></pre>
+<p>Next we pipe the directory path to the input file through functions from the <code>readxl</code> package. <code>readxl::excel_sheets()</code> extracts the tab labels of an <code>.xlsx</code> file into a character vector. <code>purrr::set_names()</code> gives each element of the vector a name that is identical to that element (e.g., <code>var</code> is named “var”).</p>
+<p><code>purrr::map_df()</code> applies the function <code>readxl::read_excel()</code> each element of this named vector (i.e., to each tab, or sheet, of the multi-tab input <code>.xlsx</code>), and returns a data frame as its output. The <code>path</code> argument points to the input <code>.xlsx</code>, and the sheets of this input are read in consecutively and stacked on top of one another in the output data frame. The <code>.id</code> argument prepends a new column, named with the <code>tab_strat_var</code> token, that identifies the origin sheet of each set of rows in the data frame.</p>
+<pre class="r"><code>  path %&gt;%
+    excel_sheets() %&gt;%
+    set_names() %&gt;%
+    map_df(read_excel,
+           path = path,
+          .id = tab_strat_var)
+}</code></pre>
+<p># input file is multi-tabbed .xlsx. Tabs contain lookup tables for each # agestrat. read input file into a df, stacking tabs on top of one another, and # creating a new column ‘agestrat’ to identify the origin tab of each set of rows.</p>
 </div>
 </div>
 </div>

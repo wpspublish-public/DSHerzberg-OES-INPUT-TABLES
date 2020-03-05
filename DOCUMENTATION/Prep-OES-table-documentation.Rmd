@@ -116,22 +116,21 @@ The lookup stratification over two levels (different from previous example):
 ###### VALID CODE TO RUN
 
 ```{r three_level_readin, eval=FALSE}
+suppressMessages(library(here))
+suppressMessages(library(tidyverse))
+suppressMessages(library(readxl))
+
 file_strat_var <- 'form'
 file_strat_val <- c('parent', 'teacher', 'self')
 tab_strat_var <- 'agestrat'
 key_var <- 'raw'
 col_var <- 'SS'
 
-scale_readin <- function(x) {
-  # express the directory paths to the input files as a char vec.
+three_level_readin <- function(x) {
   here(
     paste0('INPUT-FILES/', x, '-', tab_strat_var, '-', key_var, 'To', col_var, '.xlsx')) %>%
     assign('path', ., envir = .GlobalEnv)
-
-
-  # input file is multi-tabbed .xlsx. Tabs contain lookup tables for each
-  # agestrat. read input file into a df, stacking tabs on top of one another, and
-  # creating a new column 'agestrat' to identify the origin tab of each set of rows.
+  
   path %>%
     excel_sheets() %>%
     set_names() %>%
@@ -140,16 +139,34 @@ scale_readin <- function(x) {
           .id = tab_strat_var)
 }
 
-scale_lookup_pre <- file_strat_val %>% 
+file_strat_val %>% 
   map(scale_readin) %>% 
   setNames(file_strat_val) %>% 
-  bind_rows(.id = file_strat_var)
+  bind_rows(.id = file_strat_var) %>% 
+  assign(
+    paste0(file_strat_var, '_', tab_strat_var, '_', key_var, 'To', col_var, '_lookup'), 
+    ., envir = .GlobalEnv)
 ```
 
 ###### COMMENTED SNIPPETS
+First load three required packages.
+
 The generic code for reading an input file with stratification over file, tab, and table levels requries the user to designate token values. For the file-level variable, you must specify both the name (e.g., `'form'`) and the values (e.g., `c('parent', 'teacher', 'self')`). The table level of stratification captures the core lookup relationship between two variables:
 
 * `key_var`: the lookup input, located in the table's far-left column; and,
 * `col_var`: the lookup output, located in the columns to the right of the key column.
-```{r three_level_readin, echo=1:5, eval=FALSE}
+```{r three_level_readin, echo=1:9, eval=FALSE}
 ```
+Here we write a function `three_level_readin` to read in the input file. We use `here::here()` and `base::paste0` to express the file path to the input file as a character string. Note the token substitutions in the string. `base::assign()` is used to assign the string to the object `path` in the global environment, so that it can be accessed from there when `three_level_readin` is called.
+```{r three_level_readin, echo=11:14, eval=FALSE}
+```
+Next we pipe the directory path to the input file through functions from the `readxl` package. `readxl::excel_sheets()` extracts the tab labels of an `.xlsx` file into a character vector. `purrr::set_names()` gives each element of the vector a name that is identical to that element (e.g., `var` is named "var").
+
+`purrr::map_df()` applies the function `readxl::read_excel()` to each element of this named vector (i.e., to each tab, or sheet, of the multi-tab input `.xlsx`), and returns a data frame as its output. The `path` argument points to the input `.xlsx`, and the sheets of this input are read in consecutively and stacked on top of one another in the output data frame. The `.id` argument prepends a new column, named with the `tab_strat_var` token, that identifies the origin sheet of each set of rows in the output data frame. 
+```{r three_level_readin, echo=15:22, eval=FALSE}
+```
+
+
+  # input file is multi-tabbed .xlsx. Tabs contain lookup tables for each
+  # agestrat. read input file into a df, stacking tabs on top of one another, and
+  # creating a new column 'agestrat' to identify the origin tab of each set of rows.

@@ -26,17 +26,20 @@ scale_readin <- function(x) {
           .id = tab_strat_var)
 }
 
-scale_lookup_pre <- file_strat_val %>% 
+file_strat_val %>% 
   map(scale_readin) %>% 
   setNames(file_strat_val) %>% 
-  bind_rows(.id = file_strat_var)
+  bind_rows(.id = file_strat_var) %>% 
+  assign(
+    paste0(file_strat_var, '_', tab_strat_var, '_', key_var, 'To', col_var, '_lookup'), 
+    ., envir = .GlobalEnv)
 
 # Read in CV .xlsx
 CV_readin <- function(x) {
   # express the directory paths to the input files as a char vec.
   here(
     paste0('INPUT-FILES/CV', x, '.xlsx')) %>%
-    assign('path', ., envir = .GlobalEnv)
+    assign(paste0(file_strat_var, '_', tab_strat_var, '_', key_var, 'To', col_var), ., envir = .GlobalEnv)
   path %>% 
     excel_sheets() %>%
     set_names() %>%
