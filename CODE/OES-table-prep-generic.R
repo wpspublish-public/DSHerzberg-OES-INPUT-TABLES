@@ -8,16 +8,11 @@ tab_strat_var <- 'agestrat'
 key_var <- 'raw'
 col_var <- 'SS'
 
-scale_readin <- function(x) {
-  # express the directory paths to the input files as a char vec.
+three_level_readin <- function(x) {
   here(
     paste0('INPUT-FILES/', x, '-', tab_strat_var, '-', key_var, 'To', col_var, '.xlsx')) %>%
     assign('path', ., envir = .GlobalEnv)
 
-
-  # input file is multi-tabbed .xlsx. Tabs contain lookup tables for each
-  # agestrat. read input file into a df, stacking tabs on top of one another, and
-  # creating a new column 'agestrat' to identify the origin tab of each set of rows.
   path %>%
     excel_sheets() %>%
     set_names() %>%
@@ -27,7 +22,7 @@ scale_readin <- function(x) {
 }
 
 file_strat_val %>% 
-  map(scale_readin) %>% 
+  map(three_level_readin) %>% 
   setNames(file_strat_val) %>% 
   bind_rows(.id = file_strat_var) %>% 
   assign(
