@@ -24,7 +24,7 @@ The goal is to have code that functions as templates for 1-, 2-, and 3- level st
 Consider:
 
 * Requiring the file level stratification to always be form. Therefore, any lookup that is divided by form always has multiple input files.
-* File name consists of 1, 2, or 3 elements separated by `-`, in a three-level strat, the nomenclature would be [fileStratVar]-[tabStratVar]-[lookupRel].xlsx, where [lookupRel] provides the variable in the far-left lookup column and the variable whose values are lookedup up in the remaining right-ward columns, separated by `To` 
+* File name consists of 1, 2, or 3 elements separated by `-`, in a three-level strat, the nomenclature would be [fileStratVar]-[tabStratVar]-[lookupRel].xlsx, where [lookupRel] provides the variable in the far-left lookup column and the variable whose values are looked up in the remaining right-ward columns, separated by `To` 
       + thus, `parent-agestrat-rawToSS.xlsx`, `parent-agestratToCV.xlsx`, etc.
 * Use read_xl and always .xlsx, for consistency?
 
@@ -59,7 +59,7 @@ Here and throughout, certain token markers are employed to designate user-input 
 
 ##### Format of raw-to-SS lookup tables .xlsx
 
-The raw-to-SS lookup tables by scale is the first buidling block for the OES input tables. The task is to lookup `SS`, and the basic operation is the many-to-one correspondence between `rawscore` and `SS`. That lookup correspondence is stratified over three levels:
+The raw-to-SS lookup tables by scale is the first buidling block for the OES input tables. The task is to look up `SS`, and the basic operation is the many-to-one correspondence between `rawscore` and `SS`. That lookup correspondence is stratified over three levels:
 
 1. columns (scale)
 2. tabs (agestrat)
@@ -177,6 +177,6 @@ Next we pipe the directory path to the input file through functions from the `re
 ```
 In the next snippet, `three_level_readin()` is called to read the three input `.xlsx` files into a single data frame. This is accomplished by calling `map()` to apply `three_level_readin()` iteratively to the three values of the file level varible, contained in the character vector `file_strat_var`. This returns three data frames as described in the previous section.
 
-These three objects are then named appropriately using `stats::setNames()`. They are stacked on top of one another and bound into a single data frame with `dplyr::bind_rows()`. The `.id` argument prepends and new column identifying the origin `.xlsx` for each set of rows, according to the appropriate value of `file_strat_var`. The resulting object is `assign()`ed to the global environment, with a name corresponding to the input file conventions, with `_lookup` appended.
+These three objects are then named appropriately using `stats::setNames()`. They are stacked on top of one another and bound into a single data frame with `dplyr::bind_rows()`. The `.id` argument prepends a new column identifying the origin `.xlsx` for each set of rows, according to the appropriate value of `file_strat_var`. The resulting object is `assign()`ed to the global environment, with a name corresponding to the input file conventions, with `_lookup` appended.
 ```{r three_level_readin, echo=24:30, eval=FALSE}
 ```
