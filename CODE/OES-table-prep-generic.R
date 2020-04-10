@@ -29,6 +29,11 @@ file_strat_val %>%
     paste0(file_strat_var, '_', tab_strat_var, '_', key_var, 'To', col_var, '_lookup'), 
     ., envir = .GlobalEnv)
 
+lookup_foundation <- form_agestrat_rawToSS_lookup %>%
+  gather('scale','SS',-form, -agestrat, -rawscore) %>% 
+  select(scale, everything())
+
+
 # Read in CV .xlsx
 CV_readin <- function(x) {
   # express the directory paths to the input files as a char vec.

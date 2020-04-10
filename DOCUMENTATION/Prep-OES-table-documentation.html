@@ -209,7 +209,7 @@ $(document).ready(function () {
 <p>Consider:</p>
 <ul>
 <li>Requiring the file level stratification to always be form. Therefore, any lookup that is divided by form always has multiple input files.</li>
-<li>File name consists of 1, 2, or 3 elements separated by <code>-</code>, in a three-level strat, the nomenclature would be [fileStratVar]-[tabStratVar]-[lookupRel].xlsx, where [lookupRel] provides the variable in the far-left lookup column and the variable whose values are lookedup up in the remaining right-ward columns, separated by <code>To</code>
+<li>File name consists of 1, 2, or 3 elements separated by <code>-</code>, in a three-level strat, the nomenclature would be [fileStratVar]-[tabStratVar]-[lookupRel].xlsx, where [lookupRel] provides the variable in the far-left lookup column and the variable whose values are looked up in the remaining right-ward columns, separated by <code>To</code>
 <ul>
 <li>thus, <code>parent-agestrat-rawToSS.xlsx</code>, <code>parent-agestratToCV.xlsx</code>, etc.</li>
 </ul></li>
@@ -247,7 +247,7 @@ self-rawToSS.xlsx = <code>self-agestrat-rawToSS.xlsx</code></p>
 <h3>Multi-file-tab-column lookups</h3>
 <div id="format-of-raw-to-ss-lookup-tables-.xlsx" class="section level5">
 <h5>Format of raw-to-SS lookup tables .xlsx</h5>
-<p>The raw-to-SS lookup tables by scale is the first buidling block for the OES input tables. The task is to lookup <code>SS</code>, and the basic operation is the many-to-one correspondence between <code>rawscore</code> and <code>SS</code>. That lookup correspondence is stratified over three levels:</p>
+<p>The raw-to-SS lookup tables by scale is the first buidling block for the OES input tables. The task is to look up <code>SS</code>, and the basic operation is the many-to-one correspondence between <code>rawscore</code> and <code>SS</code>. That lookup correspondence is stratified over three levels:</p>
 <ol style="list-style-type: decimal">
 <li>columns (scale)</li>
 <li>tabs (agestrat)</li>
@@ -301,8 +301,64 @@ self-rawToSS.xlsx = <code>self-agestrat-rawToSS.xlsx</code></p>
 <li>cell values are growth scores</li>
 </ul></li>
 </ul>
-<div id="look-at-whether-all-inputs-can-be-expressed-as-multi-file-tab-colum-with-consistency-about-which-vars-are-expressed-at-which-levels" class="section level20">
-<p>LOOK at whether all inputs can be expressed as multi-file-tab-colum, with consistency about which vars are expressed at which levels</p>
+</div>
+<div id="generic-three-level-input-structure" class="section level5">
+<h5>Generic three-level input structure</h5>
+<ul>
+<li>all files are .xlsx, read in with <code>read_xl</code></li>
+<li>file-level variable is always <code>form</code></li>
+<li>tab-level variable is always <code>agestrat</code></li>
+<li>column-level variable captures relationship between lookup input and lookup output
+<ul>
+<li>foundational lookup inputs: <code>scale</code>, <code>form</code>, <code>agestrat</code>, <code>rawscore</code>, <code>SS</code></li>
+<li>possible lookup outputs: <code>CV</code>, <code>growth</code>, <code>desc_range</code>, <code>percentile</code>, <code>age_equiv</code></li>
+</ul></li>
+</ul>
+<div id="examples-of-implementation" class="section level6">
+<h6>EXAMPLES OF IMPLEMENTATION</h6>
+</div>
+<div id="cv-lookup-stratified-by-form-agestrat-scale-but-no-lookup-relationship-with-either-rawscore-or-ss" class="section level6">
+<h6>CV lookup: stratified by form, agestrat, scale, but no lookup relationship with either rawscore or SS</h6>
+<ul>
+<li>Traditional format
+<ul>
+<li>single .xlsx</li>
+<li>tab-level variable: form (parent, teacher, self)</li>
+<li>column-level: key (left-most) is <code>agestrat</code>, right-ward are <code>COG_CV90</code>, <code>EMO_CV90</code>, <code>COG_CV95</code>, <code>COG_CV95</code></li>
+</ul></li>
+<li>New format
+<ul>
+<li>file-level variable: form (e.g., parent)</li>
+<li>tab-level variable: agestrat (e.g., 060)</li>
+<li>column-level: key (left-most) is <code>agestrat</code>, right-ward are <code>COG_CV90</code>, <code>EMO_CV90</code>, <code>COG_CV95</code>, <code>COG_CV95</code></li>
+</ul></li>
+<li>Key innovations:
+<ul>
+<li>to preserve standard file structure: <code>agestrat</code> is represented redundantly at both tab and column level</li>
+</ul></li>
+</ul>
+</div>
+<div id="percentile-lookup-no-stratification-straight-ss-to-percentile-lookup-table" class="section level6">
+<h6>Percentile lookup: no stratification, straight SS-to-percentile lookup table</h6>
+<ul>
+<li>Traditional format
+<ul>
+<li>single .csv</li>
+<li>tab-level variable: none</li>
+<li>column-level: key (left-most) is <code>SS</code>, right-ward is <code>Percentile</code></li>
+</ul></li>
+<li>New format
+<ul>
+<li>file-level variable: form (set to generic value, e.g., “all”)</li>
+<li>tab-level variable: agestrat (set to generic value, e.g., “012”)</li>
+<li>column-level: key (left-most) is <code>SS</code>, right-ward is <code>Percentile</code></li>
+</ul></li>
+<li>Key innovations:
+<ul>
+<li>within code, <code>file_strat_var</code> and <code>tab_strat_var</code> set to generic values that are always used when there is no stratification at those level</li>
+<li>file name also has generic values, in this case <code>form-agestrat-SStoPercentile.xlsx</code></li>
+</ul></li>
+</ul>
 <p><br></p>
 </div>
 <div id="valid-code-to-run" class="section level6">
@@ -336,7 +392,11 @@ file_strat_val %&gt;%
   bind_rows(.id = file_strat_var) %&gt;% 
   assign(
     paste0(file_strat_var, '_', tab_strat_var, '_', key_var, 'To', col_var, '_lookup'), 
-    ., envir = .GlobalEnv)</code></pre>
+    ., envir = .GlobalEnv)
+
+lookup_foundation &lt;- form_agestrat_rawToSS_lookup %&gt;%
+  gather('scale','SS', -form, -agestrat, -rawscore) %&gt;% 
+  select(scale, everything())</code></pre>
 </div>
 <div id="commented-snippets" class="section level6">
 <h6>COMMENTED SNIPPETS</h6>
@@ -366,7 +426,7 @@ col_var &lt;- 'SS'</code></pre>
     paste0('INPUT-FILES/', x, '-', tab_strat_var, '-', key_var, 'To', col_var, '.xlsx')) %&gt;%
     assign('path', ., envir = .GlobalEnv)</code></pre>
 <p>Next we pipe the directory path to the input file through functions from the <code>readxl</code> package. <code>readxl::excel_sheets()</code> extracts the tab labels of an <code>.xlsx</code> file into a character vector. <code>purrr::set_names()</code> gives each element of the vector a name that is identical to that element (e.g., <code>var</code> is named “var”).</p>
-<p><code>purrr::map_df()</code> applies the function <code>readxl::read_excel()</code> to each element of this named vector (i.e., to each tab, or sheet, of the multi-tab input <code>.xlsx</code>), and returns a data frame as its output. The <code>path</code> argument points to the input <code>.xlsx</code>, and the sheets of this input are read in consecutively and stacked on top of one another in the output data frame. The <code>.id</code> argument prepends a new column, named with the <code>tab_strat_var</code> token, that identifies the origin sheet of each set of rows in the output data frame.</p>
+<p><code>purrr::map_df()</code> applies the function <code>readxl::read_excel()</code> to each element of this named vector (i.e., to each tab, or sheet, of the multi-tab input <code>.xlsx</code>), and returns a data frame as its output. The <code>path</code> argument points to the input <code>.xlsx</code>, and the sheets of this input are read consecutively and stacked on top of one another in the output data frame. The <code>.id</code> argument prepends a new column, named with the <code>tab_strat_var</code> token, that identifies the origin sheet of each set of rows in the output data frame.</p>
 <pre class="r"><code>  path %&gt;%
     excel_sheets() %&gt;%
     set_names() %&gt;%
@@ -375,7 +435,7 @@ col_var &lt;- 'SS'</code></pre>
           .id = tab_strat_var)
 }</code></pre>
 <p>In the next snippet, <code>three_level_readin()</code> is called to read the three input <code>.xlsx</code> files into a single data frame. This is accomplished by calling <code>map()</code> to apply <code>three_level_readin()</code> iteratively to the three values of the file level varible, contained in the character vector <code>file_strat_var</code>. This returns three data frames as described in the previous section.</p>
-<p>These three objects are then named appropriately using <code>stats::setNames()</code>. They are stacked on top of one another and bound into a single data frame with <code>dplyr::bind_rows()</code>. The <code>.id</code> argument prepends and new column identifying the origin <code>.xlsx</code> for each set of rows, according to the appropriate value of <code>file_strat_var</code>. The resulting object is <code>assign()</code>ed to the global environment, with a name corresponding to the input file conventions, with <code>_lookup</code> appended.</p>
+<p>These three objects are then named appropriately using <code>stats::setNames()</code>. They are stacked on top of one another and bound into a single data frame with <code>dplyr::bind_rows()</code>. The <code>.id</code> argument prepends a new column identifying the origin <code>.xlsx</code> for each set of rows, according to the appropriate value of <code>file_strat_var</code>. The resulting object is <code>assign()</code>ed to the global environment, with a name corresponding to the input file conventions, with <code>_lookup</code> appended.</p>
 <pre class="r"><code>file_strat_val %&gt;% 
   map(three_level_readin) %&gt;% 
   setNames(file_strat_val) %&gt;% 
@@ -383,6 +443,63 @@ col_var &lt;- 'SS'</code></pre>
   assign(
     paste0(file_strat_var, '_', tab_strat_var, '_', key_var, 'To', col_var, '_lookup'), 
     ., envir = .GlobalEnv)</code></pre>
+<p>At this point, the data object has the following column structure:</p>
+<table>
+<thead>
+<tr class="header">
+<th>form</th>
+<th>agestrat</th>
+<th>rawscore</th>
+<th>COG</th>
+<th>EMO</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>parent</td>
+<td>060</td>
+<td>1</td>
+<td>89</td>
+<td>87</td>
+</tr>
+</tbody>
+</table>
+<p>This is close to the foundational structure needed to assemble the final OES lookup table, but a further transformation is required. In the final OES table, all lookup input variables must be present in a tall, multilevel (nested) format. In the current data object, the columns <code>form</code>, <code>agestrat</code>, and <code>rawscore</code> are in this format. All possible values of <code>rawscore</code> are nested within each value of <code>agestrat</code>, and, in turn, all values of <code>agestrat</code> are nested within each value of <code>form</code>.</p>
+<p>The columns <code>COG</code> and <code>EMO</code> contain SS values corresponding to each value of <code>rawscore</code>. These columns combine two key foundational lookup inputs: <code>scale</code> and <code>SS</code>. In the final OES table, the <code>scale</code> and <code>SS</code> variables must have their own columns, and values must be arranged in the tall, multilevel format. In essence, the raw-to-ss correspondence now captured in the <code>COG</code> and <code>EMO</code> columns must be nested with respect to a <code>scale</code> column in which <code>COG</code> and <code>EMO</code> are row values instead of column names.</p>
+<p>The next snippet accomplishes this transformation using <code>tidyr::gather()</code>. The transformed object is named <code>lookup_foundation</code> to denote its foundational status vis-a-vis the desired final OES table.</p>
+<p>In this call of <code>gather()</code>, <code>'scale'</code> and <code>'SS'</code> name the new columns that will hold the information now contained in the <code>COG</code> and <code>EMO</code> columns of the current data object. The <code>scale</code> column will hold the scale names <code>COG</code> and <code>EMO</code> (currently represented as column names). The <code>SS</code> column will hold the values of SS for each scale. The expression <code>-form, -agestrat, -rawscore</code> removes these three columns from the gathering operation, so that the only columns transformed are <code>COG</code> and <code>EMO</code>. In fact, the within-row relationship between <code>form</code>, <code>agestrat</code>, <code>rawscore</code> and SS that exists in the current object will be preserved in the transformed object, but it will be replicated for each value of <code>scale</code>, going down the rows of the transformed table. The transformed table thus is formatted as follows:</p>
+<table>
+<thead>
+<tr class="header">
+<th>scale</th>
+<th>form</th>
+<th>agestrat</th>
+<th>rawscore</th>
+<th>SS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>COG</td>
+<td>parent</td>
+<td>060</td>
+<td>1</td>
+<td>89</td>
+</tr>
+<tr class="even">
+<td>EMO</td>
+<td>parent</td>
+<td>060</td>
+<td>1</td>
+<td>87</td>
+</tr>
+</tbody>
+</table>
+<p>In the transformed table, all five foundational lookup inputs (<code>scale</code>, <code>form</code>, <code>agestrat</code>, <code>rawscore</code>, <code>SS</code>) are each represented in their own column, which in turn contains all possible values of that input. The structure is fully nested, meaning that every possible crossing of the lookup inputs is represented in a unique row.</p>
+<p>This structure simplifies the process of adding lookup output columns to the table. To add a column, you create an input object that captures the lookup relationship between input and output (e.g., an <code>SS</code> to <code>age_equiv</code> lookup), and join that input object to <code>lookup_foundation</code>.</p>
+<pre class="r"><code>lookup_foundation &lt;- form_agestrat_rawToSS_lookup %&gt;%
+  gather('scale','SS', -form, -agestrat, -rawscore) %&gt;% 
+  select(scale, everything())</code></pre>
 </div>
 </div>
 </div>
