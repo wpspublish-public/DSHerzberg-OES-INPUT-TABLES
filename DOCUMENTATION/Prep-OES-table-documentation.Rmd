@@ -121,31 +121,33 @@ The lookup stratification over two levels (different from previous example):
 ###### CV lookup: stratified by form, agestrat, scale, but no lookup relationship with either rawscore or SS
 
 * Traditional format
-      + single .xlsx
-      + tab-level variable: form (parent, teacher, self)
-      + column-level: key (left-most) is `agestrat`, right-ward are `COG_CV90`, `EMO_CV90`, `COG_CV95`, `COG_CV95`
+  + single .xlsx
+  + tab-level variable: form (parent, teacher, self)
+  + column-level: key (left-most) is `agestrat`, right-ward are `COG_CV90`, `EMO_CV90`, `COG_CV95`, `COG_CV95`
 
 * New format
-      + file-level variable: form (e.g., parent)
-      + tab-level variable: agestrat (e.g., 060)
-      + column-level: key (left-most) is `agestrat`, right-ward are `COG_CV90`, `EMO_CV90`, `COG_CV95`, `COG_CV95`
+  + file-level variable: form (e.g., parent)
+  + tab-level variable: agestrat (e.g., 060)
+  + column-level: key (left-most) is `agestrat`, right-ward are `COG_CV90`, `EMO_CV90`, `COG_CV95`, `COG_CV95`
+      
 * Key innovations: 
-      + to preserve standard file structure: `agestrat` is represented redundantly at both tab and column level
+  + to preserve standard file structure: `agestrat` is represented redundantly at both tab and column level
 
 ###### Percentile lookup: no stratification, straight SS-to-percentile lookup table
 
 * Traditional format
-      + single .csv
-      + tab-level variable: none
-      + column-level: key (left-most) is `SS`, right-ward is `Percentile`
+  + single .csv
+  + tab-level variable: none
+  + column-level: key (left-most) is `SS`, right-ward is `Percentile`
       
 * New format
-      + file-level variable: form (set to generic value, e.g., "form")
-      + tab-level variable: agestrat (set to generic value, e.g., "agestrat")
-      + column-level: key (left-most) is `SS`, right-ward is `Percentile`
-* Key innovations: 
-      + within code, `file_strat_var` and `tab_strat_var` set to generic values that are always used when there is no stratification at those level
-      + file name also has generic values, in this case `form-agestrat-SStoPercentile.xlsx`
+  + file-level variable: form (set to generic value, e.g., "form")
+  + tab-level variable: agestrat (set to generic value, e.g., "agestrat")
+  + column-level: key (left-most) is `SS`, right-ward is `Percentile`
+  
+* Key innovations:
+  + within code, `file_strat_var` and `tab_strat_var` set to generic values that are always used when there is no stratification at those levels
+  + file name also has generic values, in this case `form-agestrat-SStoPercentile.xlsx`
 
 <br>
 
